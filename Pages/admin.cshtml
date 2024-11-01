@@ -1,0 +1,28 @@
+﻿@page
+@model commerceProjet.Pages.adminModel
+@{
+
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>Administration</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>Administration</h1>
+        <ul class="admin-menu">
+            <li><a href="/products">Gérer les Produits</a></li>
+            <li><a href="/categories">Gérer les Catégories</a></li>
+            <li><a href="/customers">Gérer les Clients</a></li>
+            <li><a href="/orders">Gérer les Commandes</a></li>
+            <li><a href="/orderdetails">Gérer les detailles des Commandes</a></li>
+        </ul>
+        <div id="cartSummary" style="display: none; position: fixed; top: 0; width: 100%; background-color: #f8f8f8; border-bottom: 1px solid #ddd; padding: 10px; z-index: 1000;">
+            <!-- Le contenu du panier apparaîtra ici -->
+        </div>
+    </div>
+</body>
+</html>

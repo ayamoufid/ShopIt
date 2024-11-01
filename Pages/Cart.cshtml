@@ -1,0 +1,47 @@
+﻿@page
+@using commerceProjet.Models
+@model CartModel
+@{
+    ViewData["Title"] = "Mon Panier";
+    var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("cart");
+}
+
+<h2>Ma Panier</h2>
+
+@if (cart.Count == 0)
+{
+    <p>Votre panier est vide.</p>
+}
+else
+{
+    <form method="post" asp-page-handler="UpdateCart">
+        <table>
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in cart)
+                {
+                    <tr>
+                        <td>@item.ProductId</td>
+                        <td>
+                            <input type="number" name="quantities[@item.ProductId]" value="@item.Quantity" min="1" />
+                        </td>
+                        <td>
+                            <button type="submit" name="remove" value="@item.ProductId">Supprimer</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="submit">Mettre à jour le panier</button>
+    </form>
+
+    <form method="post" asp-page-handler="ClearCart">
+        <button type="submit">Vider le panier</button>
+    </form>
+}

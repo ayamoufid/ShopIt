@@ -1,0 +1,69 @@
+﻿@page "{categoryId:int}"
+@using commerceProjet.Models
+@model commerceProjet.Pages.ProductsByCategoryModel
+@{
+    ViewData["Title"] = "Produits par Catégorie";
+    string searchName = Request.Query["searchName"];
+    decimal? maxPrice = string.IsNullOrWhiteSpace(Request.Query["maxPrice"]) ? null : (decimal?)Convert.ToDecimal(Request.Query["maxPrice"]);
+
+    // Initialisation du panier
+    var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("cart") ?? new List<CartItem>();
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>Accueil - Catégories</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <h2>Produits de la Catégorie : @Model.Products.FirstOrDefault()?.Category.Name</h2>
+
+    <form method="get">
+        <input type="text" name="searchName" placeholder="Rechercher par nom" value="@searchName" />
+        <input type="number" name="maxPrice" placeholder="Prix maximum" step="0.01" value="@maxPrice" />
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <div class="product-container">
+        @foreach (var product in Model.Products)
+        {
+            if ((!string.IsNullOrWhiteSpace(searchName) && !product.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase)) ||
+            (maxPrice.HasValue && product.Price > maxPrice))
+            {
+                continue;
+            }
+
+            <div class="product-card">
+                <img src="~/@product.Image" alt="@product.Name" class="product-image" />
+                <div class="product-info">
+                    <h3>@product.Name</h3>
+                    <p>@product.Description</p>
+                    <p class="price">Prix : @product.Price Dhs</p>
+                    <p class="stock">Stock : @product.StockQuantity</p>
+
+                    @if (product.StockQuantity > 0)
+                    {
+                        <form method="post" asp-page-handler="AddToCart">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <input type="hidden" name="stockQuantity" value="@product.StockQuantity" />
+                            <button type="submit">Ajouter au panier</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="expired">Rupture de stock</span>
+                    }
+                </div>
+            </div>
+        }
+
+        <div id="cartSummary">
+            <form method="post" asp-page="/Cart">
+                <button type="submit">Afficher le Panier</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
